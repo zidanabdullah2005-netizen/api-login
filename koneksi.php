@@ -1,16 +1,29 @@
 <?php
-$host = "mysql";
-$user = "root";
-$pass = "UGJOfVHsgXzsOAofwXkAVxrpNz0qmnld";
-$db   = "railway";
-$port = "3306";
+// koneksi.php
 
+// Konfigurasi Database - MEMBACA OTOMATIS DARI INTERNAL RAILWAY
+$host     = getenv('MYSQLHOST') ?: "mysql.railway.internal"; 
+$port     = getenv('MYSQLPORT') ?: "3306"; 
+$dbname   = getenv('MYSQLDATABASE') ?: "railway";                               
+$username = getenv('MYSQLUSER') ?: "root";                                  
+$password = getenv('MYSQLPASSWORD') ?: "qbwgyLhREkhOHVWIXnqCWrAxkTrynrsJ"; 
+
+// Membuat koneksi
 try {
-    // Kita pakai parameter port karena Railway tidak pakai port default standar
-    $koneksi = new PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
-    $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn = new PDO(
+        "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4",
+        $username,
+        $password
+    );
+
+    // Mode error PDO
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Mode fetch default
+    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    
 } catch (PDOException $e) {
-    echo "Koneksi database gagal: " . $e->getMessage();
-    die();
+    // Jika gagal koneksi
+    die("Koneksi database gagal: " . $e->getMessage());
 }
 ?>
