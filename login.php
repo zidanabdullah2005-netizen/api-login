@@ -1,22 +1,28 @@
 <?php
-include 'koneksi.php';
+include "koneksi.php";
 
-if (isset($_GET['username']) && isset($_GET['password'])) {
+// UBAH DARI $_GET MENJADI $_POST
+if(isset($_POST['username']) && isset($_POST['password'])){
 
-    $username = $_GET['username'];
-    $password = $_GET['password'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    $query = $koneksi->prepare("SELECT * FROM user WHERE username = :user AND password = :pass");
-    $query->execute([
-        'user' => $username,
-        'pass' => $password
+    // cek username dan password
+    $sql = "SELECT * FROM users 
+            WHERE username = :username 
+            AND password = :password";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+        ':username' => $username,
+        ':password' => $password
     ]);
 
-    $data = $query->fetch();
+    $data = $stmt->fetch();
 
-    if ($data) {
+    if($data){
         echo "berhasil";
-    } else {
+    }else{
         echo "gagal";
     }
 }
